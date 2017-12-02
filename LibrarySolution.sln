@@ -21,6 +21,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5 - Crosscutting", "5 - Cro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.ApplicationService", "Library.ApplicationService\Library.ApplicationService\Library.ApplicationService.csproj", "{9141A6F2-8A24-4112-ABC6-0D20695672B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.ApplicationService.Test", "Library.ApplicationService.Test\Library.ApplicationService.Test\Library.ApplicationService.Test.csproj", "{A0CEC0CC-FE02-4920-945F-03E337A3EB05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Library.Domain.Test", "Library.Domain.Test\Library.Domain.Test\Library.Domain.Test.csproj", "{067456C0-086C-46A8-B37F-1405717B7BFC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +47,14 @@ Global
 		{9141A6F2-8A24-4112-ABC6-0D20695672B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9141A6F2-8A24-4112-ABC6-0D20695672B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9141A6F2-8A24-4112-ABC6-0D20695672B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0CEC0CC-FE02-4920-945F-03E337A3EB05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0CEC0CC-FE02-4920-945F-03E337A3EB05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0CEC0CC-FE02-4920-945F-03E337A3EB05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0CEC0CC-FE02-4920-945F-03E337A3EB05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{067456C0-086C-46A8-B37F-1405717B7BFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{067456C0-086C-46A8-B37F-1405717B7BFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{067456C0-086C-46A8-B37F-1405717B7BFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{067456C0-086C-46A8-B37F-1405717B7BFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,5 +64,7 @@ Global
 		{6BB03634-50F3-46CF-817C-CFCDAD5C01D6} = {5520A6ED-A574-447D-A2B0-3585696415B9}
 		{ED863E9E-B62A-4730-8663-F69E491C524C} = {5520A6ED-A574-447D-A2B0-3585696415B9}
 		{9141A6F2-8A24-4112-ABC6-0D20695672B0} = {4DB18A5F-7F35-4A81-9688-127773A21DE6}
+		{A0CEC0CC-FE02-4920-945F-03E337A3EB05} = {4DB18A5F-7F35-4A81-9688-127773A21DE6}
+		{067456C0-086C-46A8-B37F-1405717B7BFC} = {7C0D7419-FE90-4188-8813-CFADCCD4EBB6}
 	EndGlobalSection
 EndGlobal
