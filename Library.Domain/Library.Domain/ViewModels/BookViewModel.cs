@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Library.Domain.Interfaces;
 
 namespace Library.Domain.ViewModels
 {
-	public class BookViewModel
+	public class BookViewModel : IBookViewModel
 	{
 	}
 }

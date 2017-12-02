@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Interfaces\Services\ILibraryService.cs" />
     <Compile Include="Interfaces\ViewModels\IBookViewModel.cs" />
+    <Compile Include="Models\BookModel.cs" />
     <Compile Include="Services\LibraryService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\BookViewModel.cs" />
