@@ -3,26 +3,19 @@ using FluentNHibernate.Cfg.Db;
 using NHibernate;
 using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Library.Repository
 {
-	public class FluentConfiguration
+	public static class FluentConfiguration
 	{
-		private static ISessionFactory CreateSessionFactory()
+		private static string _dataBaseName = "library.db";
+
+		public static ISessionFactory CreateSessionFactory()
 		{
 			return Fluently.Configure()
-			  .Database(
-				SQLiteConfiguration.Standard
-				  .UsingFile("firstProject.db")
-			  )
-			  .Mappings(m =>
-				m.FluentMappings.AddFromAssemblyOf<BookMapping>())
+			  .Database(SQLiteConfiguration.Standard.UsingFile(_dataBaseName))
+			  .Mappings(m => m.FluentMappings.AddFromAssemblyOf<BookMapping>())
 			  .ExposeConfiguration(BuildSchema)
 			  .BuildSessionFactory();
 		}
@@ -30,8 +23,8 @@ namespace Library.Repository
 		private static void BuildSchema(Configuration config)
 		{
 			// delete the existing db on each run
-			if (File.Exists(DbFile))
-				File.Delete(DbFile);
+			if (File.Exists(_dataBaseName))
+				File.Delete(_dataBaseName);
 
 			// this NHibernate tool takes a configuration (with mapping info in)
 			// and exports a database schema from it
