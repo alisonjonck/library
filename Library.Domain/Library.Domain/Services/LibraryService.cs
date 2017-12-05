@@ -4,7 +4,7 @@ using Library.Domain.Interfaces.ViewModels;
 using Library.Domain.ViewModels;
 using System.Collections.Generic;
 
-namespace Library.Domain
+namespace Library.Domain.Services
 {
 	public class LibraryService : ILibraryService
 	{
