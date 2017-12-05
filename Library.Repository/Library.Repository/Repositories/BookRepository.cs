@@ -1,10 +1,11 @@
-﻿using Library.Domain.Models;
+﻿using Library.Domain.Interfaces.Repositories;
+using Library.Domain.Models;
 using NHibernate;
 using System.Collections.Generic;
 
 namespace Library.Repository.Repositories
 {
-	public class BookRepository
+	public class BookRepository : IBookRepository
 	{
 		private readonly ISession _session = FluentAPI.GetCurrentSession();
 		public BookRepository()
