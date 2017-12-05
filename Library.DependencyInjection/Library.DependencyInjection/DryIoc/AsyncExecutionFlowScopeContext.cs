@@ -24,11 +24,12 @@ THE SOFTWARE.
 
 namespace DryIoc
 {
-    using System;
-    using System.Threading;
+	using Library.DependencyInjection;
+	using System;
+	using System.Threading;
 
-    /// <summary>Stores scopes propagating through async-await boundaries.</summary>
-    public sealed class AsyncExecutionFlowScopeContext : IScopeContext, IDisposable
+	/// <summary>Stores scopes propagating through async-await boundaries.</summary>
+	public sealed class AsyncExecutionFlowScopeContext : IScopeContext, IDisposable
     {
         /// <summary>Statically known name of root scope in this context.</summary>
         public static readonly string ScopeContextName = typeof(AsyncExecutionFlowScopeContext).FullName;

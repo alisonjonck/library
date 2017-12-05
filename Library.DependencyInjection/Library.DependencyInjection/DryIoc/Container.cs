@@ -3945,7 +3945,7 @@ namespace DryIoc
                     return null;
 
                 var factory = new ReflectionFactory(concreteServiceType,
-                    made: DryIoc.FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic);
+                    made: DependencyInjection.FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic);
 
                 // try resolve expression first and return null,
                 // to enable fallback to other rules if unresolved
@@ -3961,7 +3961,7 @@ namespace DryIoc
         }
 
         /// <summary>Rule to automatically resolves non-registered service type which is: nor interface, nor abstract.
-        /// For constructor selection we are using <see cref="DryIoc.FactoryMethod.ConstructorWithResolvableArguments"/>.
+        /// For constructor selection we are using <see cref="DependencyInjection.FactoryMethod.ConstructorWithResolvableArguments"/>.
         /// The resolution creates transient services.</summary>
         /// <param name="condition">(optional) Condition for requested service type and key.</param>
         /// <param name="reuse">(optional) Reuse.</param>
@@ -3989,7 +3989,7 @@ namespace DryIoc
                 ReflectionFactory factory = null;
 
                 factory = new ReflectionFactory(implType, reuse,
-                    made: DryIoc.FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
+                    made: DependencyInjection.FactoryMethod.ConstructorWithResolvableArgumentsIncludingNonPublic,
 
                     // condition checks that factory is resolvable
                     setup: Setup.With(null, condition: req =>
@@ -4677,7 +4677,7 @@ namespace DryIoc
         public static Made Of(MemberInfo factoryMethodOrMember, ServiceInfo factoryInfo = null,
             ParameterSelector parameters = null, PropertiesAndFieldsSelector propertiesAndFields = null)
         {
-            return Of(DryIoc.FactoryMethod.Of(factoryMethodOrMember, factoryInfo), parameters, propertiesAndFields);
+            return Of(DependencyInjection.FactoryMethod.Of(factoryMethodOrMember, factoryInfo), parameters, propertiesAndFields);
         }
 
         /// <summary>Creates factory specification with method or member selector based on request.</summary>
@@ -4688,7 +4688,7 @@ namespace DryIoc
         public static Made Of(Func<Request, MemberInfo> getMethodOrMember, ServiceInfo factoryInfo = null,
             ParameterSelector parameters = null, PropertiesAndFieldsSelector propertiesAndFields = null)
         {
-            return Of(r => DryIoc.FactoryMethod.Of(getMethodOrMember(r), factoryInfo), parameters, propertiesAndFields);
+            return Of(r => DependencyInjection.FactoryMethod.Of(getMethodOrMember(r), factoryInfo), parameters, propertiesAndFields);
         }
 
         /// <summary>Creates factory specification with method or member selector based on request.</summary>
@@ -4699,7 +4699,7 @@ namespace DryIoc
         public static Made Of(Func<Request, MemberInfo> getMethodOrMember, Func<Request, ServiceInfo> factoryInfo,
             ParameterSelector parameters = null, PropertiesAndFieldsSelector propertiesAndFields = null)
         {
-            return Of(r => DryIoc.FactoryMethod.Of(getMethodOrMember(r), factoryInfo(r)), parameters, propertiesAndFields);
+            return Of(r => DependencyInjection.FactoryMethod.Of(getMethodOrMember(r), factoryInfo(r)), parameters, propertiesAndFields);
         }
 
         /// <summary>Defines how to select constructor from implementation type.</summary>
@@ -4709,7 +4709,7 @@ namespace DryIoc
         public static Made Of(Func<Type, ConstructorInfo> getConstructor, ParameterSelector parameters = null,
             PropertiesAndFieldsSelector propertiesAndFields = null)
         {
-            return Of(r => DryIoc.FactoryMethod.Of(getConstructor(r.ImplementationType)
+            return Of(r => DependencyInjection.FactoryMethod.Of(getConstructor(r.ImplementationType)
                 .ThrowIfNull(Error.GotNullConstructorFromFactoryMethod, r)),
                 parameters, propertiesAndFields);
         }
@@ -4798,7 +4798,7 @@ namespace DryIoc
             else return Throw.For<TypedMade<TService>>(Error.NotSupportedMadeExpression, callExpr);
 
             FactoryMethodSelector factoryMethod = request =>
-                DryIoc.FactoryMethod.Of(ctorOrMethodOrMember, getFactoryInfo == null ? null : getFactoryInfo(request));
+                DependencyInjection.FactoryMethod.Of(ctorOrMethodOrMember, getFactoryInfo == null ? null : getFactoryInfo(request));
 
             var hasCustomValue = false;
 
@@ -4841,7 +4841,7 @@ namespace DryIoc
         private static ParameterSelector ComposeParameterSelectorFromArgs(ref bool hasCustomValue,
             ParameterInfo[] parameterInfos, IList<Expression> argExprs, params Func<RequestInfo, object>[] argValues)
         {
-            var parameters = DryIoc.Parameters.Of;
+            var parameters = DependencyInjection.Parameters.Of;
             for (var i = 0; i < argExprs.Count; i++)
             {
                 var parameter = parameterInfos[i];
@@ -4878,7 +4878,7 @@ namespace DryIoc
         private static PropertiesAndFieldsSelector ComposePropertiesAndFieldsSelector(ref bool hasCustomValue,
             IList<MemberBinding> memberBindings, params Func<RequestInfo, object>[] argValues)
         {
-            var propertiesAndFields = DryIoc.PropertiesAndFields.Of;
+            var propertiesAndFields = DependencyInjection.PropertiesAndFields.Of;
             for (var i = 0; i < memberBindings.Count; i++)
             {
                 var memberAssignment = (memberBindings[i] as MemberAssignment).ThrowIfNull();
@@ -7127,13 +7127,13 @@ namespace DryIoc
                 Rules.ThrowIfDependencyHasShorterReuseLifespan)
                 ThrowIfReuseHasShorterLifespanThanParent(reuse);
 
-            if (reuse == DryIoc.Reuse.Singleton)
+            if (reuse == DependencyInjection.Reuse.Singleton)
                 flags |= RequestFlags.IsSingletonOrDependencyOfSingleton;
             // check for disposable transient
-            else if (reuse == DryIoc.Reuse.Transient)
+            else if (reuse == DependencyInjection.Reuse.Transient)
             {
                 reuse = GetTransientDisposableTrackingReuse(factory);
-                if (reuse != DryIoc.Reuse.Transient)
+                if (reuse != DependencyInjection.Reuse.Transient)
                     flags |= RequestFlags.TracksTransientDisposable;
             }
 
@@ -7153,7 +7153,7 @@ namespace DryIoc
             // if no specified the wrapper reuse is always Transient,
             // other container-wide default reuse is applied
             return factory.FactoryType == FactoryType.Wrapper
-                ? DryIoc.Reuse.Transient
+                ? DependencyInjection.Reuse.Transient
                 : Container.Rules.DefaultReuseInsteadOfTransient;
         }
 
@@ -7167,17 +7167,17 @@ namespace DryIoc
                 (factory.ImplementationType ?? GetActualServiceType()).IsAssignableTo(typeof(IDisposable));
 
             if (!tracksTransientDisposable)
-                return DryIoc.Reuse.Transient;
+                return DependencyInjection.Reuse.Transient;
 
             var parentReuse = GetFirstParentNonTransientReuseUntilFunc();
-            if (parentReuse != DryIoc.Reuse.Transient)
+            if (parentReuse != DependencyInjection.Reuse.Transient)
                 return parentReuse;
 
             if (IsWrappedInFunc())
-                return DryIoc.Reuse.Transient;
+                return DependencyInjection.Reuse.Transient;
 
             // If no parent with reuse found, then track in current open scope or in singletons scope
-            return DryIoc.Reuse.ScopedOrSingleton;
+            return DependencyInjection.Reuse.ScopedOrSingleton;
         }
 
         private void ThrowIfReuseHasShorterLifespanThanParent(IReuse reuse)
@@ -7211,9 +7211,9 @@ namespace DryIoc
                 for (var p = RawParent; !p.IsEmpty; p = p.RawParent)
                 {
                     if (p.FactoryType == FactoryType.Wrapper && p.GetActualServiceType().IsFunc())
-                        return DryIoc.Reuse.Transient;
+                        return DependencyInjection.Reuse.Transient;
 
-                    if (p.FactoryType != FactoryType.Wrapper && p.Reuse != DryIoc.Reuse.Transient)
+                    if (p.FactoryType != FactoryType.Wrapper && p.Reuse != DependencyInjection.Reuse.Transient)
                         return p.Reuse;
                 }
 
@@ -7221,13 +7221,13 @@ namespace DryIoc
                 for (var p = PreResolveParent; !p.IsEmpty; p = p.ParentOrWrapper)
                 {
                     if (p.FactoryType == FactoryType.Wrapper && p.GetActualServiceType().IsFunc())
-                        return DryIoc.Reuse.Transient;
+                        return DependencyInjection.Reuse.Transient;
 
-                    if (p.FactoryType != FactoryType.Wrapper && p.Reuse != DryIoc.Reuse.Transient)
+                    if (p.FactoryType != FactoryType.Wrapper && p.Reuse != DependencyInjection.Reuse.Transient)
                         return p.Reuse;
                 }
 
-            return DryIoc.Reuse.Transient;
+            return DependencyInjection.Reuse.Transient;
         }
 
         /// <summary>Serializable request info stripped off run-time info.</summary>
@@ -7316,7 +7316,7 @@ namespace DryIoc
 
             if (Factory != null)
             {
-                if (_reuse != DryIoc.Reuse.Transient)
+                if (_reuse != DependencyInjection.Reuse.Transient)
                     s.Append(Reuse is SingletonReuse ? "singleton" : "scoped").Append(' ');
 
                 var factoryType = Factory.FactoryType;
@@ -8062,7 +8062,7 @@ namespace DryIoc
                 if (request.ContainsNestedResolutionCall)
                     isCacheable = false;
 
-                if (request.Reuse != DryIoc.Reuse.Transient &&
+                if (request.Reuse != DependencyInjection.Reuse.Transient &&
                     request.GetActualServiceType() != typeof(void))
                 {
                     var originalServiceExprType = serviceExpr.Type;
@@ -8199,7 +8199,7 @@ namespace DryIoc
             {
                 // Warn about registering disposable transient
                 var reuse = Reuse ?? containerRules.DefaultReuseInsteadOfTransient;
-                if (reuse != DryIoc.Reuse.Transient)
+                if (reuse != DependencyInjection.Reuse.Transient)
                     return true;
 
                 if (setup.AllowDisposableTransient ||
@@ -9534,7 +9534,7 @@ namespace DryIoc
                 request.Container.GetDecoratorExpressionOrDefault(request) != null)
                 return base.GetDelegateOrDefault(request); // use expression creation
 
-            if (request.Reuse != DryIoc.Reuse.Transient)
+            if (request.Reuse != DependencyInjection.Reuse.Transient)
                 return base.GetDelegateOrDefault(request); // use expression creation
 
             return (state, r, scope) => _factoryDelegate(r.Resolver);
@@ -10696,7 +10696,7 @@ namespace DryIoc
         public RequestInfo Push(Type serviceType, Type requiredServiceType, object serviceKey, string metadataKey, object metadata, IfUnresolved ifUnresolved,
             int factoryID, FactoryType factoryType, Type implementationType, IReuse reuse, RequestFlags flags)
         {
-            var info = DryIoc.ServiceInfo.Of(serviceType, requiredServiceType, ifUnresolved, serviceKey, metadataKey, metadata);
+            var info = DependencyInjection.ServiceInfo.Of(serviceType, requiredServiceType, ifUnresolved, serviceKey, metadataKey, metadata);
             return Push(info, factoryID, factoryType, implementationType, reuse, flags);
         }
 
@@ -10729,7 +10729,7 @@ namespace DryIoc
             if (IsEmpty)
                 return s.Append("{empty}");
 
-            if (Reuse != null && Reuse != DryIoc.Reuse.Transient)
+            if (Reuse != null && Reuse != DependencyInjection.Reuse.Transient)
                 s.Append(Reuse is SingletonReuse ? "singleton" : "scoped").Append(' ');
 
             if (FactoryType != FactoryType.Service)
@@ -11124,13 +11124,13 @@ namespace DryIoc
         /// <returns>New facade container.</returns>
         IContainer CreateFacade();
 
-        /// <summary>Searches for requested factory in registry, and then using <see cref="DryIoc.Rules.UnknownServiceResolvers"/>.</summary>
+        /// <summary>Searches for requested factory in registry, and then using <see cref="DependencyInjection.Rules.UnknownServiceResolvers"/>.</summary>
         /// <param name="request">Factory request.</param>
         /// <returns>Found factory, otherwise null if <see cref="Request.IfUnresolved"/> is set to <see cref="IfUnresolved.ReturnDefault"/>.</returns>
         Factory ResolveFactory(Request request);
 
         /// <summary>Searches for registered service factory and returns it, or null if not found.
-        /// Will use <see cref="DryIoc.Rules.FactorySelector"/> if specified.</summary>
+        /// Will use <see cref="DependencyInjection.Rules.FactorySelector"/> if specified.</summary>
         /// <param name="request">Factory request.</param>
         /// <returns>Found factory or null.</returns>
         Factory GetServiceFactoryOrDefault(Request request);
@@ -11266,7 +11266,7 @@ namespace DryIoc
         /// <returns>message format.</returns>
         protected static string GetMessage(ErrorCheck errorCheck, int errorCode)
         {
-            return errorCode == -1 ? Throw.GetDefaultMessage(errorCheck) : DryIoc.Error.Messages[errorCode];
+            return errorCode == -1 ? Throw.GetDefaultMessage(errorCheck) : DependencyInjection.Error.Messages[errorCode];
         }
 
         /// <summary>Prints argument for formatted message.</summary> <param name="arg">To print.</param> <returns>Printed string.</returns>
@@ -12447,12 +12447,13 @@ namespace DryIoc
 
 namespace DryIoc.Experimental
 {
-    using System;
-    using System.Reflection;
-    using ImTools;
+	using System;
+	using System.Reflection;
+	using ImTools;
+	using DryIoc;
 
-    /// <summary>Succinct convention-based, LINQ like API to resolve resolution root at the end.</summary>
-    public static class DI
+	/// <summary>Succinct convention-based, LINQ like API to resolve resolution root at the end.</summary>
+	public static class DI
     {
         /// <summary>Pre-configured auto-magic rules.</summary>
         public static readonly Rules Relaxed = Rules.Default

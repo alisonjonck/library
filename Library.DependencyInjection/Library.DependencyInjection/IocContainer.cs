@@ -1,33 +1,20 @@
-﻿using DryIoc;
-using Library.Domain.Interfaces.Repositories;
+﻿using Library.Domain.Interfaces.Repositories;
 using Library.Domain.Interfaces.Services;
 using Library.Domain.Interfaces.ViewModels;
 using Library.Domain.Services;
 using Library.Domain.ViewModels;
 using Library.Repository.Repositories;
 
-namespace Library.DependencyInjection
+namespace DryIoc
 {
-	public sealed class IocContainer
+	public partial class Container
 	{
-		private readonly Container _container;
-		public IocContainer()
+		public void RegisterAllModules()
 		{
-			_container = new Container(Rules.Default.With(FactoryMethod.ConstructorWithResolvableArguments));
-			Register();
-		}
+			this.Register<IBookViewModel, BookViewModel>();
+			this.Register<IBookRepository, BookRepository>();
 
-		private void Register()
-		{
-			_container.Register<IBookViewModel, BookViewModel>();
-			_container.Register<IBookRepository, BookRepository>();
-
-			_container.Register<ILibraryService, LibraryService>();
-		}
-
-		public I Resolve<I>()
-		{
-			return _container.Resolve<I>();
+			this.Register<ILibraryService, LibraryService>();
 		}
 	}
 }
